@@ -240,4 +240,4 @@ fabric.properties
 logs/*
 postgres-data
 files/*
-*/.gitkeep
+!*/.gitkeep

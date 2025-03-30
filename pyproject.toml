@@ -1,0 +1,19 @@
+[project]
+name = "fastapi-yandex-test"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "alembic>=1.15.2",
+    "asyncpg>=0.30.0",
+    "fastapi>=0.115.12",
+    "fastapi-sso>=0.18.0",
+    "pydantic-settings>=2.8.1",
+    "python-jose[cryptography]>=3.4.0",
+    "python-magic>=0.4.27",
+    "python-multipart>=0.0.20",
+    "sqlalchemy-utils>=0.41.2",
+    "sqlalchemy[asyncio]>=2.0.40",
+    "uvicorn>=0.34.0",
+]

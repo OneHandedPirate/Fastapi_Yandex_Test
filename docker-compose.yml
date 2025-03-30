@@ -1,0 +1,39 @@
+services:
+  fastapi:
+    container_name: fastapi_app
+    build:
+      context: .
+    env_file: .env
+    entrypoint: ["sh", "-c", "uv run alembic upgrade head && uv run -m src.main"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./files:/usr/app/src/files
+    networks:
+      - custom
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres_db
+    image: postgres:16-alpine
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "${DB__USER}"
+      POSTGRES_PASSWORD: "${DB__PASSWORD}"
+      POSTGRES_DB: "${DB__DATABASE}"
+    ports:
+      - "${DB__OUTER_PORT}:5432"
+    networks:
+      - custom
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -U ${DB__USER}", "pg_isready", "-U", "${DB__USER}", "-d", "${DB__DATABASE}" ]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+networks:
+  custom:
+    driver: bridge

@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, UTC
-from typing import Annotated, Literal
+from typing import Literal
 
 from jose import jwt, JWTError
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, Security
+from fastapi.security import APIKeyHeader
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
@@ -59,13 +59,21 @@ def verify_token(
         return None
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    authorization: str = Security(api_key_header),
     session: AsyncSession = Depends(get_async_session),
 ) -> ReadUserSchema:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    token = authorization.split(" ")[1]
     user_token_data: UserTokenDataSchema | None = verify_token(token)
 
     if not user_token_data:

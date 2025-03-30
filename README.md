@@ -64,7 +64,7 @@ make create_env
       }
       ``` 
 
-!Все эндпоинты ниже требуют `access_token` в заголовке `Authorization` (`Authorization: Bearer <access_token>`)
+!Все эндпоинты ниже требуют `access_token` в заголовке `Authorization` (`Authorization: Bearer <access_token>`). При авторизации в `/docs` передавать `Bearer <access_token>` в заголовок. 
 
 - users:
     
